@@ -271,6 +271,7 @@
               {{^categories}}
               <span class="category-formgroup dummy">
                 <input type="hidden" name="chalid" value="{{id}}">
+                <input type="hidden" name="delete" value="false">
                 <input type="text" placeholder="title" name="chaltitle" value="{{title}}" class="hide" autocomplete="off">
                 <input type="text" class="input-small hide" placeholder="category" name="chalcategory" value="{{category}}" autocomplete="off">
                 <input type="number" class="input-mini hide" placeholder="points" name="chalpoints" value="{{points}}" autocomplete="off">
@@ -280,10 +281,12 @@
               {{#categories}}{{#challenges}}
               <span class="category-formgroup">
                 <input type="hidden" name="chalid" value="{{id}}">
+                <input type="hidden" name="delete" value=false>
                 <input type="text" placeholder="title" name="chaltitle" value="{{title}}" autocomplete="off">
                 <input type="text" class="input-small" placeholder="category" name="chalcategory" value="{{category}}" data-provide="typeahead" data-items="4" data-source='[{{#categories}}"{{name}}",{{/categories}}""]' data-placement="above" autocomplete="off">
                 <input type="number" class="input-mini" placeholder="points" name="chalpoints" value="{{points}}" autocomplete="off">
                 <a href="#" class="add-challenge"><i class="icon-plus"></i></a>
+                <a href="#" class="delete-challenge"><i class="icon-minus"></i></a>
               </span><br>
               {{/challenges}}{{/categories}}
             </div>

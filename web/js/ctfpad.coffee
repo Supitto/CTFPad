@@ -163,9 +163,22 @@ $ ->
     a = $(this).parent().clone()
     a.find('input').val('').removeClass 'hide'
     $(this).parent().after a
+    a.find('input[name="delete"]').val('new')
     if a.hasClass 'dummy'
       a.removeClass('dummy')
       $(this).parent().remove()
+
+
+  $('body').delegate '.delete-challenge', 'click', ->
+    a = $(this).parent()
+    if a.find('input[name="delete"]')[0].value == "new"
+      a.remove()
+    else if a.find('input[name="delete"]')[0].value == "false"
+      a.addClass('highlighted') 
+      a.find('input[name="delete"]').val('true')
+    else
+      a.removeClass('highlighted')
+      a.find('input[name="delete"]').val('false')
 
   $('body').delegate '.remove-challenge', 'click', ->
     if $('.category-formgroup').length > 1 then $(this).parent().remove()
@@ -233,7 +246,7 @@ $ ->
     l = $('#ctfmodifyform').serializeArray()
     ctf = {ctf: window.current.id, challenges:[]}
     until l.length is 0
-      ctf.challenges.push {'id':parseInt(l.shift().value), 'title':l.shift().value, 'category':l.shift().value, 'points':parseInt(l.shift().value)}
+      ctf.challenges.push {'id':parseInt(l.shift().value), 'delete':l.shift().value, 'title':l.shift().value, 'category':l.shift().value, 'points':parseInt(l.shift().value)}
     sock.send JSON.stringify {type:'modifyctf', data: ctf}
     $('#ctfmodifymodal').modal 'hide'
     setTimeout ->

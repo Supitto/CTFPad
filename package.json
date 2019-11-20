@@ -5,14 +5,14 @@
   "author": "Kasalehlia <kasalehlia@clonejo.de>",
   "dependencies": {
     "bcrypt-nodejs": "*",
+    "coffee-script": "^1.12.7",
     "consolidate": "*",
     "express": "3.x",
     "http-proxy": "1.x",
     "mustache": "*",
     "mv": "^2.0.3",
     "sqlite3": "*",
-    "ws": "*",
-    "coffee-script": "1.x"
+    "ws": "*"
   },
   "main": "main.js",
   "repository": {

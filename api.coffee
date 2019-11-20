@@ -145,6 +145,26 @@ exports.init = (app, db, upload, prefix) ->
           challenge.assigned = (a.user for a in assignments)
           done()
 
+  app.delete "#{prefix}/challenges/:challenge", (req, res) ->
+    try
+      req.params.challenge = parseInt req.params.challenge
+    catch e
+      res.send 400
+      return
+    validateApiKey req, res, (user) ->
+      db.getChallenge req.params.challenge, (challenge) ->
+        unless challenge
+          res.send 404
+          return
+      try
+        db.deleteChallenge challenge.id
+      catch e
+      res.send 400
+      return
+    exports.broadcast {type: 'ctfmodification'}, req.params.ctf
+    res.send 200
+        
+
   app.put "#{prefix}/challenges/:challenge/assign", (req, res) ->
     try
       req.params.challenge = parseInt req.params.challenge

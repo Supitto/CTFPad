@@ -9,6 +9,7 @@ cons = require 'consolidate'
 WebSocketServer = require('ws').Server
 db = require './database.coffee'
 
+apikey = fs.readFileSync("etherpad-lite/APIKEY.txt","utf8");
 # parse config file
 config = null
 console.log 'checking for config file'
@@ -322,11 +323,22 @@ wss.on 'connection', (sock) ->
             db.addChallenge ctfid, c.title, c.category, c.points
       else if msg.type and msg.type is 'modifyctf'
         for c in msg.data.challenges
-
           if !c.points
             c.points = 0
           if c.id
-            db.modifyChallenge c.id, c.title, c.category, c.points
+            if c.delete == 'true'
+              db.getChallengeFiles(c.id,(files) -> 
+                for file in files
+                  file = "#{__dirname}/uploads/#{file.id}"
+                  if /^[a-f0-9A-F]+$/.test(file.id) and fs.existsSync(file)
+                    db.deleteFile file.id, (err, type, typeId) ->
+                      fs.unlink file, () -> console.log("deleted #{file.id}")
+                  )
+              http.get "http://0.0.0.0:#{config.etherpad_port}/api/1.2.13/deletePad?apikey=#{apikey}&padID=challenge#{c.id}", ->
+                
+              db.deleteChallenge c.id
+            else
+              db.modifyChallenge c.id, c.title, c.category, c.points
           else
             db.addChallenge msg.data.ctf, c.title, c.category, c.points
         wss.clients.forEach (s) ->

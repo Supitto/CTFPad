@@ -23,6 +23,7 @@ sql = new sqlite3.Database 'ctfpad.sqlite', ->
   stmts.isAssigned = sql.prepare 'SELECT COUNT(*) AS assigned FROM assigned WHERE user = ? AND challenge = ?'
   stmts.assign = sql.prepare 'INSERT INTO assigned VALUES (?,?)'
   stmts.unassign = sql.prepare 'DELETE FROM assigned WHERE user = ? AND challenge = ?'
+  stmts.unassignFromChallenge = sql.prepare 'DELETE FROM assigned WHERE challenge = ?'
   stmts.changePassword = sql.prepare 'UPDATE user SET pwhash = ? WHERE sessid = ?'
   stmts.getApiKeyFor = sql.prepare 'SELECT apikey FROM user WHERE sessid = ?'
   stmts.setApiKeyFor = sql.prepare 'UPDATE user SET apikey = ? WHERE sessid = ?'
@@ -34,6 +35,7 @@ sql = new sqlite3.Database 'ctfpad.sqlite', ->
   stmts.fileMimetype = sql.prepare 'SELECT mimetype FROM file WHERE id = ?'
   stmts.deleteFile = sql.prepare 'DELETE FROM file WHERE id = ?'
   stmts.getLatestCtfId = sql.prepare 'SELECT id FROM ctf ORDER BY id DESC LIMIT 1'
+  stmts.deleteChallenge = sql.prepare 'DELETE FROM challenge WHERE id = ?'
 
 #
 # EXPORTS
@@ -67,6 +69,10 @@ exports.getChallenge = (challengeId, cb = ->) ->
   stmts.getChallenge.get [challengeId], H cb
   stmts.getChallenge.reset()
 
+exports.deleteChallenge = (challengeId) ->
+    stmts.unassignFromChallenge.run [challengeId]
+    stmts.deleteChallenge.run [challengeId]
+    
 exports.addChallenge = (ctfId, title, category, points, cb = ->) ->
   stmts.addChallenge.run [ctfId, title, category, points], (err) ->
     cb(this.lastID)

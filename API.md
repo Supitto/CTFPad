@@ -115,6 +115,9 @@ Response body:
         } ]
     }
 
+### *GET* ctfs/<$CTF>/challenge/<$ID>
+DELETE a challenge from a ctf
+
 ### *POST* ctfs/<$CTF>/challenges
 Creates a new challenge for a CTF
 
